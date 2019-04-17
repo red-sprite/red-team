@@ -18,13 +18,16 @@ class App extends Component {
               {
                 position: '',
                 isHit: ''
-              },              {
+              },              
+              {
                 position: '',
                 isHit: ''
-              },              {
+              },              
+              {
                 position: '',
                 isHit: ''
-              },              {
+              },              
+              {
                 position: '',
                 isHit: ''
               }

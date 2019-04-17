@@ -20,7 +20,7 @@ class Grid extends React.Component {
                   >
                     {column !== 0 && (
                       <img
-                        src={column === 1 ? fire : splash}
+                        src={column === 2 ? splash : column === 3 ? fire : ""}
                         style={{ width: "40px" }}
                       />
                     )}

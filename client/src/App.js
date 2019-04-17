@@ -9,6 +9,13 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      aShips: [
+        ["A1", "A2", "A3", "A4", "A5"],
+        ["A10", "B10", "C10", "D10"],
+        ["F7", "F8", "F9"],
+        ["D4", "E4", "E5"],
+        ["H4", "H5"]
+      ],
       ourships: {
         c: [
           {
@@ -143,6 +150,10 @@ class App extends Component {
       });
   };
 
+  get = () => {
+    axios;
+  };
+
   makeGuess = () => {
     var coords = this.getGuess();
 
@@ -172,6 +183,36 @@ class App extends Component {
 
     return [x, y];
   };
+
+  response(cPos) {
+    let cRet = "M";
+    var iShip = -1;
+    var iPart = -1;
+    var lGood = false;
+    this.setState(prevState => {
+      prevState.theirGuess.push(cPos);
+    });
+    this.state.aShips.forEach(function(aRow) {
+      ++iShip;
+      iPart = -1;
+      lGood = false;
+      aRow.forEach(function(cPart) {
+        ++iPart;
+        if (cPos === cPart) {
+          cRet = "H";
+          let newAShips = this.state.aShips;
+          newAShips[iShip][iPart] = "X" + cPos;
+          this.setState({ aShips: newAShips });
+        } else if (this.state.aShips[iShip][iPart].substr(0, 1) !== "X") {
+          lGood = true;
+        }
+      });
+      if (cRet === "H" && !lGood) {
+        cRet = "S";
+      }
+    });
+    return cRet;
+  }
 
   render() {
     return (

@@ -5,49 +5,54 @@ var guesser = {
 
 	guesses: [],
 
-	theirGrid: {
-		A: ["", "", "", "", "", "", "", "", "", ""],
-		B: ["", "", "", "", "", "", "", "", "", ""],
-		C: ["", "", "", "", "", "", "", "", "", ""],
-		D: ["", "", "", "", "", "", "", "", "", ""],
-		E: ["", "", "", "", "", "", "", "", "", ""],
-		F: ["", "", "", "", "", "", "", "", "", ""],
-		G: ["", "", "", "", "", "", "", "", "", ""],
-		H: ["", "", "", "", "", "", "", "", "", ""],
-		I: ["", "", "", "", "", "", "", "", "", ""],
-		J: ["", "", "", "", "", "", "", "", "", ""],
-	},
+	xCoords: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+
+	yCoords: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+
+	theirGrid: [
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+	],
 
 	translateResponse: function(response) {
-		// return H or M - Hit or Miss
-		return "M";
+		// return 3 - Hit, 2 - Miss
+		return 3;
 	},
 
 	makeGuess: function () {
 		var coords = this.getGuess();
 
-		var guessString = coords[0] + coords[1];
+		var guessString = coords.y + coords.x;
 		// Call the server and get it's response
 
 		var result = this.translateResponse("");
 
-		this.theirGrid[coords[0]][coords[1] - 1] = result;
+		this.theirGrid[this.yCoords.indexOf(coords.y)][this.xCoords.indexOf(coords.x)] = result;
 	},
 
 	getGuess: function () {
-		var xCoords = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-		var yCoords = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 		var guess;
 
 		do {
-			var x = xCoords[Math.floor(Math.random() * xCoords.length)];
-			var y = yCoords[Math.floor(Math.random() * yCoords.length)];
+			var x = this.xCoords[Math.floor(Math.random() * this.xCoords.length)];
+			var y = this.yCoords[Math.floor(Math.random() * this.yCoords.length)];
 
 			guess = x + y;
 		} while (this.guesses.indexOf(guess) === -1);
 
 		this.guesses.push(guess);
 
-		return [x, y];
+		return {
+			x: x,
+			y: y
+		};
 	}
 };

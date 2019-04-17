@@ -39,11 +39,11 @@ var guesser = {
 	},
 
 	getGuess: function () {
-		var guess;
+		var guess, x, y;
 
 		do {
-			var x = this.xCoords[Math.floor(Math.random() * this.xCoords.length)];
-			var y = this.yCoords[Math.floor(Math.random() * this.yCoords.length)];
+			x = this.xCoords[Math.floor(Math.random() * this.xCoords.length)];
+			y = this.yCoords[Math.floor(Math.random() * this.yCoords.length)];
 
 			guess = x + y;
 		} while (this.guesses.indexOf(guess) === -1);

@@ -1,0 +1,6 @@
+response('A1')
+
+function response(cPos) {
+  console.log(cPos);
+
+}

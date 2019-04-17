@@ -1,6 +1,66 @@
-response('A1')
+<script>
 
+var aShips = [['A1', 'A2', 'A3', 'A4', 'A5'],['A10', 'B10', 'C10', 'D10'],['F7', 'F8', 'F9'],['D4', 'E4', 'E5'],['H4', 'H5']];
+var theirGuess = [];
+
+console.log(response('A10'));
+console.log(response('B10'));
+console.log(response('C10'));
+console.log(response('D10'));
+console.log(response('F3'));
+	
+console.log(ourState());
+	
 function response(cPos) {
-  console.log(cPos);
-
+	cRet = 'M'
+	var iShip = -1;
+	var iPart = -1;
+	var lGood = false;
+	theirGuess.push(cPos);
+	aShips.forEach(function(aRow) {
+		++iShip;
+		iPart = -1;
+		lGood = false;
+		aRow.forEach(function(cPart) {
+			++iPart;
+			if (cPos === cPart) {
+				cRet = 'H';
+				aShips[iShip][iPart] = 'X'+cPos;
+			} else if (aShips[iShip][iPart].substr(0, 1) !== 'X') {
+				lGood = true;
+			}
+		});
+		if (cRet === 'H' && !lGood) {
+			cRet = 'S';
+		}
+	});
+	return cRet;
 }
+
+function ourState() {
+	var ourGrid = [[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]];
+	theirGuess.forEach(function(cGuess) {
+		var iY = cGuess.charCodeAt(0)-65;
+		var iX = cGuess.substr(1)-1;
+		ourGrid[iY][iX] = 2;
+	});
+
+	aShips.forEach(function(aRow) {
+		aRow.forEach(function(cPart) {
+			if (cPart.substr(0, 1) == 'X') {
+				var iY = cPart.charCodeAt(1)-65;
+				var iX = cPart.substr(2)-1;
+		console.log(cPart, iX, iY);
+				ourGrid[iY][iX] = 3;
+			} else {
+				var iY = cPart.charCodeAt(0)-65;
+				var iX = cPart.substr(1)-1;
+		console.log(cPart, iX, iY);
+				ourGrid[iY][iX] = 1;
+			}
+		});
+	});
+	return ourGrid;
+}
+	
+</script>

@@ -1,6 +1,6 @@
 <script>
 
-var aShips = [['A1', 'A2', 'A3', 'A4', 'A5'],['A10', 'B10', 'C10', 'D10'],['F7', 'F8', 'F9'],['D4', 'E4', 'E5'],['H4', 'H5']];
+var aShips = [['H4', 'H5', 'H6', 'H7', 'H8'],['F2', 'G2', 'H2', 'I2'],['C5', 'D5', 'E5'],['C9', 'D9', 'E9'],['B2', 'C2']];
 var theirGuess = [];
 
 console.log(response('A10'));
@@ -50,12 +50,10 @@ function ourState() {
 			if (cPart.substr(0, 1) == 'X') {
 				var iY = cPart.charCodeAt(1)-65;
 				var iX = cPart.substr(2)-1;
-		console.log(cPart, iX, iY);
 				ourGrid[iY][iX] = 3;
 			} else {
 				var iY = cPart.charCodeAt(0)-65;
 				var iX = cPart.substr(1)-1;
-		console.log(cPart, iX, iY);
 				ourGrid[iY][iX] = 1;
 			}
 		});

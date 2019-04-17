@@ -9,6 +9,90 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ourships: {
+        c: [
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          }
+        ],
+        b: [
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          }
+        ],
+        d: [
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          }
+        ],
+        s: [
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          }
+        ],
+        p: [
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          },
+          {
+            position: "",
+            isHit: ""
+          }
+        ]
+      },
       guesses: [],
       grid1Data: {
         ships: {

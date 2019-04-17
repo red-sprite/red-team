@@ -125,7 +125,7 @@ class App extends Component {
         [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 3, 0, 0, 0, 0, 0, 0, 2, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
 
@@ -248,6 +248,11 @@ class App extends Component {
       }
     });
     this.setState({ ourGrid: this.ourState() });
+    axios
+      .post(baseURL + "/target/", { status: cRet, cell: cPos })
+      .then(response => {
+        this.makeGuess();
+      });
   };
 
   ourState = () => {

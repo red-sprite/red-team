@@ -8,6 +8,10 @@ const baseURL = "http://192.168.8.101:3300/rsbs/v1";
 class App extends Component {
   constructor(props) {
     super(props);
+
+    this.xCoords = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    this.yCoords = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+
     this.state = {
       aShips: [
         ["A1", "A2", "A3", "A4", "A5"],
@@ -111,7 +115,7 @@ class App extends Component {
         }
       },
 
-      gridData: [
+      ourGrid: [
         [0, 1, 0, 0, 0, 2, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -124,55 +128,69 @@ class App extends Component {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
 
-      theirGrid: {
-        A: ["", "", "", "", "", "", "", "", "", ""],
-        B: ["", "", "", "", "", "", "", "", "", ""],
-        C: ["", "", "", "", "", "", "", "", "", ""],
-        D: ["", "", "", "", "", "", "", "", "", ""],
-        E: ["", "", "", "", "", "", "", "", "", ""],
-        F: ["", "", "", "", "", "", "", "", "", ""],
-        G: ["", "", "", "", "", "", "", "", "", ""],
-        H: ["", "", "", "", "", "", "", "", "", ""],
-        I: ["", "", "", "", "", "", "", "", "", ""],
-        J: ["", "", "", "", "", "", "", "", "", ""]
-      }
+      theirGrid: [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ]
     };
   }
 
-  post = () => {
-    axios
-      .post(baseURL + "/target/", { cell: "A3" })
-      .then(result => {
-        console.log({ result });
-      })
-      .catch(error => {
-        console.log({ error });
-      });
-  };
-
   get = () => {
-    axios;
+    const request = () => {
+      axios.get(baseURL + "/status/").then(response => this.response(response));
+    };
+    setInterval(request, 2000);
   };
 
   makeGuess = () => {
     var coords = this.getGuess();
 
-    var guessString = coords[0] + coords[1];
+    var guessString = coords.y + coords.x;
     // Call the server and get it's response
+    //
 
-    var result = "";
+    axios
+      .post(baseURL + "/target/", { cell: guessString })
+      .then(response => {
+        var result = this.translateResponse(response);
+        let newGrid = this.state.theirGrid;
+        newGrid[this.yCoords.indexOf(coords.y)][
+          this.xCoords.indexOf(coords.x)
+        ] = result;
+        this.setState({ theirGrid: newGrid });
+      })
+      .catch(error => {
+        console.log({ error });
+        this.get();
+      });
+  };
 
-    this.theirGrid[coords[0]][coords[1] - 1] = result;
+  translateResponse = response => {
+    switch (response) {
+      case "H":
+      case "S":
+        return 3;
+      case "M":
+        return 2;
+      default:
+        return 2;
+    }
   };
 
   getGuess = () => {
-    var xCoords = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    var yCoords = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-    var guess;
+    var guess, x, y;
 
     do {
-      var x = xCoords[Math.floor(Math.random() * xCoords.length)];
-      var y = yCoords[Math.floor(Math.random() * yCoords.length)];
+      x = this.xCoords[Math.floor(Math.random() * this.xCoords.length)];
+      y = this.yCoords[Math.floor(Math.random() * this.yCoords.length)];
 
       guess = x + y;
     } while (this.guesses.indexOf(guess) === -1);
@@ -181,10 +199,13 @@ class App extends Component {
       prevState.guesses.push(guess);
     });
 
-    return [x, y];
+    return {
+      x: x,
+      y: y
+    };
   };
 
-  response(cPos) {
+  response = cPos => {
     let cRet = "M";
     var iShip = -1;
     var iPart = -1;
@@ -212,7 +233,44 @@ class App extends Component {
       }
     });
     return cRet;
-  }
+  };
+
+  ourState = () => {
+    var ourGrid = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+    this.state.theirGuess.forEach(function(cGuess) {
+      var iY = cGuess.charCodeAt(0) - 65;
+      var iX = cGuess.substr(1) - 1;
+      ourGrid[iY][iX] = 2;
+    });
+
+    this.state.aShips.forEach(function(aRow) {
+      aRow.forEach(function(cPart) {
+        if (cPart.substr(0, 1) == "X") {
+          var iY = cPart.charCodeAt(1) - 65;
+          var iX = cPart.substr(2) - 1;
+          console.log(cPart, iX, iY);
+          ourGrid[iY][iX] = 3;
+        } else {
+          var iY = cPart.charCodeAt(0) - 65;
+          var iX = cPart.substr(1) - 1;
+          console.log(cPart, iX, iY);
+          ourGrid[iY][iX] = 1;
+        }
+      });
+    });
+    return ourGrid;
+  };
 
   render() {
     return (
@@ -232,8 +290,8 @@ class App extends Component {
         <div
           style={{ display: "flex", width: "100vw", justifyContent: "center" }}
         >
-          <Grid colour="red" data={this.state.gridData} />
-          <Grid colour="blue" data={this.state.gridData} />
+          <Grid colour="red" data={this.state.ourGrid} />
+          <Grid colour="blue" data={this.state.theirGrid} />
         </div>
       </div>
     );

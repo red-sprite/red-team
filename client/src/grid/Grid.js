@@ -3,7 +3,7 @@ import React from "react";
 class Grid extends React.Component {
   render() {
     return (
-      <tbody>
+      <tbody style={{ margin: "50px" }}>
         {Array(10).fill(
           <tr>
             {Array(10).fill(

@@ -13,7 +13,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App" style={{}}>
+      <div className="App" style={{ display: "flex" }}>
         <Grid colour="red" data={this.state.grid1Data} />
         <Grid colour="blue" />
       </div>

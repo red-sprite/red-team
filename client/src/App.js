@@ -7,7 +7,15 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      grid1Data: {}
+      grid1Data: {
+        ships: {
+          c: {},
+          b: {},
+          d: {},
+          s: {},
+          p: {}
+        }
+      }
     };
   }
 

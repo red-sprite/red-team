@@ -8,13 +8,87 @@ class App extends Component {
     super(props);
     this.state = {
       grid1Data: {
-        ships: {
-          c: {},
-          b: {},
-          d: {},
-          s: {},
-          p: {}
-        }
+        ourships: {
+          c: [
+              {
+                position: '',
+                isHit: ''
+              },
+              {
+                position: '',
+                isHit: ''
+              },              {
+                position: '',
+                isHit: ''
+              },              {
+                position: '',
+                isHit: ''
+              },              {
+                position: '',
+                isHit: ''
+              }
+            ],
+            b: [
+              {
+                position: '',
+                isHit: ''
+              },
+              {
+                position: '',
+                isHit: ''
+              },              
+              {
+                position: '',
+                isHit: ''
+              },                        
+              {
+                position: '',
+                isHit: ''
+              }
+            ],
+            d: [
+              {
+                position: '',
+                isHit: ''
+              },
+              {
+                position: '',
+                isHit: ''
+              },                                    
+              {
+                position: '',
+                isHit: ''
+              }
+            ],
+            s: [
+              {
+                position: '',
+                isHit: ''
+              },
+              {
+                position: '',
+                isHit: ''
+              },                                    
+              {
+                position: '',
+                isHit: ''
+              }
+            ],
+            p: [
+              {
+                position: '',
+                isHit: ''
+              },
+              {
+                position: '',
+                isHit: ''
+              },                                    
+              {
+                position: '',
+                isHit: ''
+              }
+            ]
+        },
       }
     };
   }

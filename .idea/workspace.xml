@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a6a3665b-22cc-4807-8579-5d836f78b016" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/client/src/guess.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/guess.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/guess.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,8 +15,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/src/guess.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="837">
-              <caret line="27" selection-start-line="27" selection-end-line="27" />
+            <state relative-caret-position="308">
+              <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
             </state>
           </provider>
         </entry>
@@ -100,12 +100,12 @@
       <option name="presentableId" value="Default" />
       <updated>1555527684168</updated>
       <workItem from="1555527686188" duration="95000" />
-      <workItem from="1555527900121" duration="2321000" />
+      <workItem from="1555527900121" duration="4094000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2416000" />
+    <option name="totallyTimeSpent" value="4189000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
@@ -145,10 +145,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/client/src/logo.svg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/src/respond">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/client/src/guess.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="837">
-          <caret line="27" selection-start-line="27" selection-end-line="27" />
+        <state relative-caret-position="308">
+          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
         </state>
       </provider>
     </entry>

@@ -14,11 +14,11 @@ class App extends Component {
 
     this.state = {
       aShips: [
-        ["A1", "A2", "A3", "A4", "A5"],
-        ["A10", "B10", "C10", "D10"],
-        ["F7", "F8", "F9"],
-        ["D4", "E4", "E5"],
-        ["H4", "H5"]
+        ["H4", "H5", "H6", "H7", "H8"],
+        ["F2", "G2", "H2", "I2"],
+        ["C5", "D5", "E5"],
+        ["C9", "D9", "E9"],
+        ["B2", "C2"]
       ],
       ourships: {
         c: [
@@ -105,6 +105,7 @@ class App extends Component {
         ]
       },
       guesses: [],
+      theirGuess: [],
       grid1Data: {
         ships: {
           c: {},
@@ -116,15 +117,15 @@ class App extends Component {
       },
 
       ourGrid: [
-        [0, 1, 0, 0, 0, 2, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
 
@@ -145,7 +146,23 @@ class App extends Component {
 
   get = () => {
     const request = () => {
-      axios.get(baseURL + "/status/").then(response => this.response(response));
+      axios.get(baseURL + "/status/", { source: "red" }).then(response => {
+        console.log({ response });
+        if (response.data.status === "T") {
+          this.response(response.data.cell);
+        } else {
+          var result = this.translateResponse(response.data.status);
+          let newGrid = this.state.theirGrid;
+
+          var iY = response.data.cell.charCodeAt(0) - 65;
+          var iX = response.data.cell.substr(1) - 1;
+
+          console.log({ iY });
+          console.log({ iX });
+          newGrid[iY][iX] = result;
+          this.setState({ theirGrid: newGrid });
+        }
+      });
     };
     setInterval(request, 2000);
   };
@@ -156,25 +173,22 @@ class App extends Component {
     var guessString = coords.y + coords.x;
     // Call the server and get it's response
     //
+    console.log({ guessString });
 
     axios
-      .post(baseURL + "/target/", { cell: guessString })
+      .post(baseURL + "/target/", { cell: guessString, source: "red" })
       .then(response => {
-        var result = this.translateResponse(response);
-        let newGrid = this.state.theirGrid;
-        newGrid[this.yCoords.indexOf(coords.y)][
-          this.xCoords.indexOf(coords.x)
-        ] = result;
-        this.setState({ theirGrid: newGrid });
+        this.get();
       })
       .catch(error => {
-        console.log({ error });
         this.get();
       });
   };
 
   translateResponse = response => {
     switch (response) {
+      case "P":
+        return 4;
       case "H":
       case "S":
         return 3;
@@ -192,8 +206,9 @@ class App extends Component {
       x = this.xCoords[Math.floor(Math.random() * this.xCoords.length)];
       y = this.yCoords[Math.floor(Math.random() * this.yCoords.length)];
 
-      guess = x + y;
-    } while (this.guesses.indexOf(guess) === -1);
+      guess = y + x;
+      console.log({ guess });
+    } while (this.state.guesses.includes(guess));
 
     this.setState(prevState => {
       prevState.guesses.push(guess);
@@ -232,7 +247,7 @@ class App extends Component {
         cRet = "S";
       }
     });
-    return cRet;
+    this.setState({ ourGrid: this.ourState() });
   };
 
   ourState = () => {
@@ -283,7 +298,7 @@ class App extends Component {
             backgroundColour: "green",
             borderRadius: "25px"
           }}
-          onClick={() => this.post()}
+          onClick={() => this.makeGuess()}
         >
           GO!
         </button>

@@ -1,6 +1,8 @@
 import React from "react";
 import fire from "../assets/fire.svg";
 import splash from "../assets/splash.svg";
+import ship from "../assets/ship.svg";
+import pending from "../assets/pending.svg";
 
 class Grid extends React.Component {
   render() {
@@ -20,8 +22,18 @@ class Grid extends React.Component {
                   >
                     {column !== 0 && (
                       <img
-                        src={column === 2 ? splash : column === 3 ? fire : ""}
-                        style={{ width: "40px" }}
+                        src={
+                          column === 1
+                            ? ship
+                            : column === 2
+                            ? splash
+                            : column === 3
+                            ? fire
+                            : column === 4
+                            ? pending
+                            : ""
+                        }
+                        style={{ maxWidth: "40px", maxHeight: "40px" }}
                       />
                     )}
                   </td>

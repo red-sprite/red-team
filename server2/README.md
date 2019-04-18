@@ -35,12 +35,12 @@ Then start again!
 
 # Status values
 
-P - Pending, keep polling
-A - Attack, please send an attack
-M - Miss, attack result
-H - Hit, attack result
-S - Hit and Sunk, attack result
-T - Target, see "cell" for targeted location
+* P - Pending, keep polling
+* A - Attack, please send an attack
+* M - Miss, attack result
+* H - Hit, attack result
+* S - Hit and Sunk, attack result
+* T - Target, see "cell" for targeted location
 
 # Cell values
 

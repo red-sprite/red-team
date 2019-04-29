@@ -1,0 +1,251 @@
+<script>
+var battle = {
+	/* 
+		* Main Functions *
+		battle.init() : Call at the start to set things up
+			Refresh both grids after this is called
+		battle.respond(cPos) : Returns the response to their guess (H,M,S). Pass the position e.g. 'A1'
+			Refresh Our Grid after this is called
+		battle.getGuess() : Returns our next guess to be sent to them
+			Refresh Their Grid after this is called
+		battle.processResult(cRes) : Prosesses the response from their server to our guess. Pass H,M or S 
+			Refresh Their Grid after this is called
+			
+		* Usefull variables *
+		battle.ourShipQty : How many ships we have left
+		battle.theirShipQty : How many ships they have left
+		battle.theirGrid : Their Grid (1 = Ship, 2 = Miss, 3 = Hit);
+		battle.ourGrid : Our Grid (1 = Ship, 2 = Miss, 3 = Hit);
+	*/
+	ourShips : [['H4', 'H5', 'H6', 'H7', 'H8'],['F2', 'G2', 'H2', 'I2'],['C5', 'D5', 'E5'],['C9', 'D9', 'E9'],['B2', 'C2']],
+//	ourShips : [['B2', 'C2', 'D2', 'E2', 'F2'],['B3', 'C3', 'D3', 'E3'],['F3', 'F4', 'F5'],['B4', 'C4', 'D4'],['G2', 'H2']],
+
+	guesses: [],
+	ourShipQty: 5,
+	theirShipQty: 5,
+	last_guess: [0, -1],
+	firstHitCurShip: [0,0],
+	deathPlan: 0,
+	theirGuess : [],
+	theirGrid: [
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+	],
+	ourGrid: [
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0],
+	],
+
+	// Initiate ourGrid by adding our ships.
+	init: function() {
+		var self = this;
+		self.ourShips.forEach(function(aShip) {
+			aShip.forEach(function(cPart) {
+				var iY = cPart.charCodeAt(0)-65;
+				var iX = cPart.substr(1)-1;
+				self.ourGrid[iY][iX] = 1;
+			});
+		});
+		//dispGrid(0);
+		//dispGrid(1);
+	},
+
+	// Provide response to their guess.
+	respond: function(cPos) {
+		var self = this;
+		cRet = 'M'
+		var iY = cPos.charCodeAt(0)-65;
+		var iX = cPos.substr(1)-1;
+		var iHS = -1;
+		if (iY >= 0 && iY <= 9 && iX >= 0 && iX <= 9) {
+			var iShip = -1;
+			var iPart, lGood;
+			self.theirGuess.push(cPos);
+			// Check for Hit, Miss or Sink
+			self.ourShips.forEach(function(aShip) {
+				++iShip;
+				iPart = -1;
+				lGood = false;
+				aShip.forEach(function(cPart) {
+					++iPart;
+					if (cPos === cPart) {
+						cRet = 'H';
+						iHS = iShip;
+						self.ourShips[iShip][iPart] = 'X';
+						self.ourGrid[iY][iX] = 3;
+					} else if (cPart !== 'X') {
+						lGood = true;
+					}
+				});
+				if (cRet === 'H' && !lGood && iShip == iHS) {
+					cRet = 'S';
+					--battle.ourShipQty;
+				}
+			});
+			// Update Grid;
+			if (self.ourGrid[iY][iX] === 0) {
+				self.ourGrid[iY][iX] = 2;
+			} else if (self.ourGrid[iY][iX] === 1) {
+				self.ourGrid[iY][iX] = 3;
+			}
+			//dispGrid(0);
+		}
+		return cRet;
+	},
+
+	processResult: function(cRes) {
+		var lastGuess_y = this.guesses[this.guesses.length-1][0];
+		var lastGuess_x = this.guesses[this.guesses.length-1][1];
+		if (this.deathPlan > 0) {
+			var firstHCS_y = this.firstHitCurShip[0];
+			var firstHCS_x = this.firstHitCurShip[1];
+		}
+		if (cRes === 'H') {
+			this.theirGrid[lastGuess_y][lastGuess_x] = 3;
+			if (this.deathPlan === 0) {
+				this.firstHitCurShip = [lastGuess_y, lastGuess_x];
+				if (this.check(lastGuess_y, lastGuess_x + 1)) {
+					this.deathPlan = 2;
+				} else if (this.check(lastGuess_y + 1, lastGuess_x)) {
+					this.deathPlan = 3;
+				} else if (this.check(lastGuess_y, lastGuess_x - 1)) {
+					this.deathPlan = 4;
+				} else if (this.check(lastGuess_y - 1, lastGuess_x)) {
+					this.deathPlan = 1;
+				}
+			} else if(this.deathPlan === 2 || this.deathPlan === 5) {
+				if (this.check(lastGuess_y, lastGuess_x + 1)) {
+					this.deathPlan = 5;
+				} else if (this.check(firstHCS_y, firstHCS_x - 1)) {
+					this.deathPlan = 4;
+				} else if (this.check(firstHCS_y + 1, firstHCS_x)) {
+					this.deathPlan = 3;
+				} else if (this.check(firstHCS_y - 1, firstHCS_x)) {
+					this.deathPlan = 1;
+				} else {
+					this.deathPlan = 0;
+				}
+			} else if(this.deathPlan === 3 || this.deathPlan === 6) {
+				if (this.check(lastGuess_y + 1, lastGuess_x)) {
+					this.deathPlan = 6;
+				} else if (this.check(firstHCS_y - 1, firstHCS_x)) {
+					this.deathPlan = 1;
+				} else {
+					this.deathPlan = 0;
+				}
+			} else if(this.deathPlan === 4) {
+				if (this.check(lastGuess_y + 1, lastGuess_x)) {
+					this.deathPlan = 3;
+				} else if (this.check(firstHCS_y - 1, firstHCS_x)) {
+					this.deathPlan = 1;
+				} else {
+					this.deathPlan = 0;
+				}
+			} else {
+				// This shouldn't happen!
+				this.deathPlan = 0;
+			}
+		} else if (cRes === 'S') {
+			this.theirGrid[lastGuess_y][lastGuess_x] = 3;
+			--this.theirShipQty;
+			this.firstHitCurShip = [0,0];
+			this.deathPlan = 0;
+		} else if (cRes === 'M' && this.deathPlan > 0) {
+			if (this.deathPlan === 2 && this.check(firstHCS_y + 1, firstHCS_x)) {
+				this.deathPlan = 3;
+			} else if (this.deathPlan === 5 && this.check(firstHCS_y, firstHCS_x - 1)) {
+				this.deathPlan = 4;
+			} else if ((this.deathPlan === 3 || this.deathPlan === 4 || this.deathPlan === 6) && this.check(firstHCS_y - 1, firstHCS_x)) {
+				this.deathPlan = 1;
+			} else {
+				this.deathPlan = 0;
+			}
+		}
+		//$("#resp").prepend(String.fromCharCode(lastGuess_y + 65) + lastGuess_x + ' = ' + cRes + ' (' + this.deathPlan + ')<br />');
+		//dispGrid(1);
+	},
+
+	check: function(y, x) {
+		var lRet = false;
+		if (y >= 0 && y <= 9 && x >= 0 && x <= 9) {
+			if (this.theirGrid[y][x] === 0) {
+				lRet = true;
+			}
+		}
+		return lRet;
+	},
+
+	getGuess: function () {
+		var x=0, y=0;
+		var guessString = '';
+		if (this.ourShipQty > 0 && this.theirShipQty > 0) {
+			if (this.deathPlan > 0) {
+				var lastGuess_y = this.guesses[this.guesses.length-1][0];
+				var lastGuess_x = this.guesses[this.guesses.length-1][1];
+				var firstHCS_y = this.firstHitCurShip[0];
+				var firstHCS_x = this.firstHitCurShip[1];
+				//Make intelligent guess
+				if (this.deathPlan === 1) {
+					y = firstHCS_y-1;
+					x = firstHCS_x;
+				} else if (this.deathPlan === 2) {
+					y = firstHCS_y;
+					x = firstHCS_x+1;
+				} else if (this.deathPlan === 5) {
+					y = lastGuess_y;
+					x = lastGuess_x+1;
+				} else if (this.deathPlan === 3) {
+					y = firstHCS_y+1;
+					x = firstHCS_x;
+				} else if (this.deathPlan === 6) {
+					y = lastGuess_y+1;
+					x = lastGuess_x;
+				} else if (this.deathPlan === 4) {
+					y = firstHCS_y;
+					x = firstHCS_x-1;
+				}
+			}
+			if (x === 0) {
+				// Make Sequenced Guess
+				do {
+					this.last_guess[1] = this.last_guess[1] + 2;
+					if (this.last_guess[1] === 11) {
+						this.last_guess[1] = 0;
+						++this.last_guess[0];
+					} else if (this.last_guess[1] === 10) {
+						this.last_guess[1] = 1;
+						++this.last_guess[0];
+					}
+					if (this.last_guess[0] > 9) {
+						this.last_guess[0] = 0;
+						this.last_guess[1] = 0;
+					}
+				} while (this.theirGrid[this.last_guess[0]][this.last_guess[1]] > 0);
+				x = this.last_guess[1];
+				y = this.last_guess[0];
+			}
+			guessString = String.fromCharCode(y + 65) + (x+1);
+			this.theirGrid[y][x] = 2;
+			this.guesses.push([y, x]);
+		}
+		//dispGrid(1);
+		return guessString;
+	}  
+}
+</script>

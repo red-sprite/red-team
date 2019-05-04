@@ -4,7 +4,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import Grid from "./grid/Grid";
 
-const baseURL = "http://192.168.8.101:3300/rsbs/v1";
+const baseURL = "http://localhost:3300/rsbs/v1";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -146,7 +146,7 @@ class App extends Component {
 
   get = () => {
     const request = () => {
-      axios.get(baseURL + "/status/", { source: "red" }).then(response => {
+      axios.get(baseURL + "/status", { params: {source: "red"} }).then(response => {
         console.log({ response });
         if (response.data.status === "T") {
           this.response(response.data.cell);

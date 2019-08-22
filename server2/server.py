@@ -1,4 +1,5 @@
 from flask import Flask, request, json, Response
+from flask_cors import CORS
 import random
 
 
@@ -14,6 +15,7 @@ class BattleServer(Flask):
 
 
 app = BattleServer(__name__)
+CORS(app)
 
 
 def get_state():
@@ -30,7 +32,7 @@ def status_get():
             'status': 'A' if team == state['attacker'] else 'P',
         }
         return Response(json.dumps(status), status=200, mimetype='application/json')
-    elif state['situation'] == 'attack-forwarding':
+    elif state['situation'] == 'attack-forwarding' or state['situation'] == 'result-pending':
         if team == state['attacker']:
             status = {
                 'status': 'P',
@@ -94,7 +96,11 @@ def target():
             state['active_attack'] = data
             state['situation'] = 'attack-forwarding'
             print('Attack made: {} -> {}'.format(data['source'], data['cell']))
-            return Response('{}', status=200, mimetype='application/json')
+            status = {
+                'status': 'P',
+                'cell': data['cell'],
+            }
+            return Response(json.dumps(status), status=200, mimetype='application/json')
         else:
             return Response('{}', status=403, mimetype='application/json')
     else:
@@ -102,4 +108,4 @@ def target():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')

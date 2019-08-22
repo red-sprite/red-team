@@ -3,7 +3,7 @@
 [Flask](http://flask.pocoo.org/) / Python based.
 
 * Make a virtualenv (Python3)
-* pip install flask
+* pip install flask flask-cors
 * python server.py
 
 # "Playing"
